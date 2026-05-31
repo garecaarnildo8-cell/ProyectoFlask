@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 #inicio  
 app = Flask(__name__)
@@ -8,7 +9,6 @@ app = Flask(__name__)
 
 def inicio():
     return "Hola mundo desde mi primera API"
-
 
 #Saludo
 @app.route("/saludo")
@@ -26,7 +26,6 @@ def usuario():
         "edad": 20,
         "carrera": "Ingenieria Informatica"
     })
-
 
 #Datos  por parametro
 @app.route("/saluda/<nombre>")
@@ -49,6 +48,19 @@ def paridad(numero):
         "numero": numero,
         "resultado": resultado
     })  
+
+@app.route("/usuario", methods=["POST"])
+def crear_usuario():
+    datos = request.get_json()
+    nombre = datos["nombre"]
+    edad = datos["edad"]
+    
+    return jsonify({
+        "Mensaje ": f"Usuario {nombre} creado exitosamente.",
+        "edad" : edad
+        
+    })
+
 
 if __name__ =="__main__":
     app.run(debug=True)
