@@ -49,6 +49,7 @@ def paridad(numero):
         "resultado": resultado
     })  
 
+# ruta crear usuario usando POST
 @app.route("/usuario", methods=["POST"])
 def crear_usuario():
     datos = request.get_json()
