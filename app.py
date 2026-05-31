@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import Flask, jsonify
 
+#inicio  
 app = Flask(__name__)
 
 @app.route("/")
@@ -35,7 +36,7 @@ def saludo_personalizado(nombre):
         "mensaje" : f"Hola {nombre}, bienvenido a mi API"
     })
 
-
+#Determinar paridad por parametro
 @app.route("/paridad/<int:numero>")
 
 def paridad(numero): 
