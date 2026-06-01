@@ -2,8 +2,16 @@ from flask import Flask
 from flask import Flask, jsonify
 from flask import Flask, jsonify, request
 
+#GET - BUSCAR
 #inicio  
 app = Flask(__name__)
+
+usuarios = [
+    
+    {"id": 1, "nombre": "Juan", "edad": 25},
+    {"id": 2, "nombre": "Ana", "edad": 22},
+    {"id": 3, "nombre": "Carlos", "edad": 28}
+]
 
 @app.route("/")
 
@@ -17,7 +25,7 @@ def saludo():
     return "Bienvenido a mi API"
 
 
-#Datos estaticos
+#Datos estaticos - usando json
 @app.route("/usuario")
 
 def usuario():
@@ -27,7 +35,7 @@ def usuario():
         "carrera": "Ingenieria Informatica"
     })
 
-#Datos  por parametro
+#Datos  por parametro - usando json
 @app.route("/saluda/<nombre>")
 
 def saludo_personalizado(nombre):
@@ -35,7 +43,7 @@ def saludo_personalizado(nombre):
         "mensaje" : f"Hola {nombre}, bienvenido a mi API"
     })
 
-#Determinar paridad por parametro
+#Determinar paridad por parametro - usando json
 @app.route("/paridad/<int:numero>")
 
 def paridad(numero): 
@@ -48,8 +56,12 @@ def paridad(numero):
         "numero": numero,
         "resultado": resultado
     })  
+#GET
+@app.route("/usuarios", methods=["GET"])
+def obtener_usuarios():
+    return jsonify(usuarios)
 
-# ruta crear usuario usando POST
+# ruta crear usuario usando POST - usando json
 @app.route("/usuario", methods=["POST"])
 def crear_usuario():
     datos = request.get_json()
@@ -62,6 +74,16 @@ def crear_usuario():
         
     })
 
+@app.route("/usuarios/<int:numero>")
 
+def buscar_usuario(numero):
+    
+    for i in  usuarios:
+        if i["id"] == numero:
+            resultado = i 
+            return jsonify(i)
+          
+    return jsonify({"error": "Usuario no encontrado"}), 404   
+    
 if __name__ =="__main__":
     app.run(debug=True)
