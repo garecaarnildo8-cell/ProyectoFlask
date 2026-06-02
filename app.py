@@ -74,6 +74,7 @@ def crear_usuario():
         
     })
 
+#metodo GET buscar un usuario - ID
 @app.route("/usuarios/<int:numero>")
 
 def buscar_usuario(numero):
@@ -84,6 +85,7 @@ def buscar_usuario(numero):
           
     return jsonify({"error": "Usuario no encontrado"}), 404   
 
+#Metodo POST agregar un usuario
 @app.route("/nuevousuario", methods=["POST"])
 
 def nuevo_usuario():
@@ -104,6 +106,22 @@ def nuevo_usuario():
         "Mensaje ": f"Usuario {nombre} creado exitosamente.",
         "usuario ": nuevo
     })
+
+#Actualizar los datos del usuario metodo PUT
+
+@app.route("/usuarios/<int:numero>", methods=["PUT"])
+
+def actualizar_datos(numero): 
+    datos=request.get_json()
+
+    for i in usuarios: 
+        if i["id"] == numero:
+            i["nombre"] = datos["nombre"]
+            i["edad"] = datos["edad"]
+            return jsonify(i)
+
+    return jsonify({"error": "Usuario no encontrado"}), 404   
+
 
 if __name__ =="__main__":
     app.run(debug=True)
