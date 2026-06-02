@@ -107,7 +107,7 @@ def nuevo_usuario():
         "usuario ": nuevo
     })
 
-#Actualizar los datos del usuario metodo PUT
+#Actualizar los datos del usuario metodo PUT por parametro
 
 @app.route("/usuarios/<int:numero>", methods=["PUT"])
 
@@ -122,6 +122,19 @@ def actualizar_datos(numero):
 
     return jsonify({"error": "Usuario no encontrado"}), 404   
 
+#Eliminar un usuario con parametrp metodo DELETE
 
+@app.route("/usuarios/<int:numero>", methods=["DELETE"])
+
+def Eliminar_Usuario(numero): 
+    for i in usuarios: 
+        if i["id"]==numero: 
+            usuarios.remove(i)
+
+            return jsonify({
+                "Mensaje" : f"Usuario {i['nombre']} eliminado exitosamente"
+            })
+            
+    return jsonify({"error": "Usuario no encontrado"}), 404  
 if __name__ =="__main__":
     app.run(debug=True)
