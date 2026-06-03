@@ -1,7 +1,14 @@
-from flask import Flask
-from flask import Flask, jsonify
 from flask import Flask, jsonify, request
+import psycopg2 
 
+def conectar():
+    return psycopg2.connect(
+        host = "localhost",
+        database="apiusuarios",
+        user= "postgres",
+        password= "1234"
+    )
+    
 #GET - BUSCAR
 #inicio  
 app = Flask(__name__)
@@ -35,6 +42,46 @@ def usuario():
         "carrera": "Ingenieria Informatica"
     })
 
+#GET usuarios desde base de datos
+@app.route("/db/usuarios", methods=["GET"])
+def obtener_usuarios_db():
+    conn = conectar()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM usuarios")
+    filas = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+    usuarios_db = []
+    for fila in filas:
+        usuarios_db.append({
+            "id": fila[0],
+            "nombre": fila[1],
+            "edad": fila[2]
+        })
+    
+    return jsonify(usuarios_db)
+
+#Agregar ususarios a la base de datos metodo POST
+
+@app.route("/db/usuarios", methods=["POST"])
+def agregar_usuarios_db():
+    conn = conectar()
+    cur= conn.cursor()
+    
+    dato = request.get_json()
+    nombre = dato["nombre"]
+    edad = dato["edad"]
+    
+    cur.execute("INSERT INTO usuarios (nombre, edad) VALUES (%s, %s)", (nombre, edad))
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return jsonify({
+        "Mensaje " : f"Usuario {nombre} registrado exitosamente"
+    })
+    
 #Datos  por parametro - usando json
 @app.route("/saluda/<nombre>")
 
@@ -135,6 +182,7 @@ def Eliminar_Usuario(numero):
                 "Mensaje" : f"Usuario {i['nombre']} eliminado exitosamente"
             })
             
-    return jsonify({"error": "Usuario no encontrado"}), 404  
+    return jsonify({"error": "Usuario no encontrado"}), 404 
+ 
 if __name__ =="__main__":
     app.run(debug=True)
