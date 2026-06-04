@@ -81,7 +81,43 @@ def agregar_usuarios_db():
     return jsonify({
         "Mensaje " : f"Usuario {nombre} registrado exitosamente"
     })
+
+#Actualizar datos de usuarios en la base de datos con metodo PUT
+@app.route("/db/usuarios/<int:numero>", methods=["PUT"])
+
+def actualizar_usuarios_db(numero): 
+        conn = conectar()
+        cur= conn.cursor()
+        datos=request.get_json()
+        
+        nombre = datos["nombre"]
+        edad   = datos["edad"]
+        
+        cur.execute("UPDATE usuarios SET nombre=%s, edad=%s WHERE id=%s",(nombre,edad,numero))
+        if cur.rowcount == 0: 
+            return jsonify({"error": "Usuario no encontrado"}), 404  
+        conn.commit()
+        cur.close()
+        
+        conn.close()
+        return jsonify({"Mensaje" :f"usuario {numero} registrado exitosamente"})
+           
+
+#Eliminar usuario de la base de datos con el metodo DELETE
+@app.route("/db/usuarios/<int:numero>", methods=["DELETE"])
+
+def eliminar_usuario_db(numero):
+     conn=conectar()
+     cur = conn.cursor()
+     cur.execute("DELETE FROM usuarios WHERE id=%s", (numero,))
+     if cur.rowcount == 0: 
+        return jsonify({"error": "Usuario no encontrado"}),404
+     conn.commit()
+     cur.close()
+     conn.close()
     
+     return jsonify({"Mensaje" : f"Usuario {numero} eliminado exitosamente"})
+
 #Datos  por parametro - usando json
 @app.route("/saluda/<nombre>")
 
@@ -183,6 +219,7 @@ def Eliminar_Usuario(numero):
             })
             
     return jsonify({"error": "Usuario no encontrado"}), 404 
- 
+
+
 if __name__ =="__main__":
     app.run(debug=True)
