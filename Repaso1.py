@@ -17,8 +17,6 @@ def crear_usuario():
 
 @app.route("/usuarios/<id>", methods=["PUT"])
 def actualizar_usuario(id):
-    # tú escribes lo de adentro
-    
     for i in usuarios:
         if i["id"]==int(id):
             datos = request.get_json()
@@ -33,4 +31,4 @@ def eliminar_usuario(id):
             usuarios.remove(i)
             return jsonify({"Mensaje":"Usuario eliminado exitosamente"}), 200
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0",debug=True)
